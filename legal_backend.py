@@ -16,7 +16,9 @@ prompts = load_prompts()  # 🔑 Load all prompts from JSON
 
 # ✅ Setup: LLM + Embedding
 
-llm = Ollama(model="llama3", request_timeout=120)
+llm = Ollama(model="llama3",
+             base_url="http://host.docker.internal:11434", request_timeout=120)
+
 embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
 Settings.llm = llm
 Settings.embed_model = embed_model
