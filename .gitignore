@@ -1,1 +1,10 @@
+__pycache__/
+*.pyc
+*.pdf
+*.docx
+*.txt
+logs/
+data/
+outputs/
+.env
 .env
