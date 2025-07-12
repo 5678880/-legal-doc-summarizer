@@ -1,34 +1,32 @@
-# 🧾 Legal Document Assistant
+# 🧾 Legal Document Simplifier & Analyzer
 
-A smart web application that simplifies complex legal documents and highlights key clauses in clear, understandable language. Built for privacy, clarity, and ease of use — powered by Python, Streamlit, and LLaMA 3.
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
+![Streamlit](https://img.shields.io/badge/Built%20with-Streamlit-red)
+![LLM](https://img.shields.io/badge/Powered%20by-Ollama%20LLaMA3-yellowgreen)
+![License](https://img.shields.io/badge/License-MIT-blue)
 
----
-
-## 🚀 Features
-
-- 📄 Upload legal documents (PDF, DOCX)
-- 🧠 AI-based simplification and clause explanation
-- 🔐 Runs fully locally — no internet required for processing
-- 🪄 Highlights important legal sections in plain English
-- 💡 Built using LLaMA 3 + Streamlit
-- 🌐 Shareable via ngrok for demo purposes
+An AI-powered web app that simplifies, summarizes, and analyzes legal documents using LLMs. Built with Streamlit, this app turns complex contracts into readable insights — for students, researchers, and legal tech enthusiasts.
 
 ---
 
-## 🛠 Technologies Used
+## ✨ Features
 
-- **Python**
-- **Streamlit**
-- **LLaMA 3** (via Ollama)
-- **PyMuPDF**, `python-docx` for document parsing
-- **Ngrok** for secure local sharing
+- 📄 Upload `.pdf`, `.docx`, or `.txt` legal documents
+- 🧠 AI-based summarization with markdown formatting
+- ✍️ Clause extraction and explanation (e.g., Termination, Confidentiality)
+- 💬 Natural language Q&A over document content
+- 🔎 Jargon simplification in everyday language
+- 📑 Clause-by-clause breakdown
+- 🕵️ Entity extraction: people, orgs, dates, locations
+- ⚖️ Document comparison with highlights
 
 ---
 
-## ▶️ How to Run Locally
+## 🛠️ Setup Instructions
 
-1. **Clone the repo:**
+### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/legal-doc-assistant.git
-cd legal-doc-assistant
+git clone https://github.com/5678880/-legal-doc-summarizer.git
+cd legal_doc_simplifier
+
