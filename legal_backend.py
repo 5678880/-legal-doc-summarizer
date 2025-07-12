@@ -1,16 +1,21 @@
+from llama_index.embeddings.huggingface import HuggingFaceEmbedding
+from llama_index.llms.ollama import Ollama
+from llama_index.core import VectorStoreIndex, Settings
+from llama_index.core import Document as LlamaDocument
 import os
 import pytesseract
 from pdf2image import convert_from_path
 from docx import Document as DocxDocument
 from datetime import datetime
 import csv
+from utils.prompt_loader import load_prompts
 
-from llama_index.core import Document as LlamaDocument
-from llama_index.core import VectorStoreIndex, Settings
-from llama_index.llms.ollama import Ollama
-from llama_index.embeddings.huggingface import HuggingFaceEmbedding
+
+prompts = load_prompts()  # 🔑 Load all prompts from JSON
+
 
 # ✅ Setup: LLM + Embedding
+
 llm = Ollama(model="llama3", request_timeout=120)
 embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
 Settings.llm = llm
@@ -81,15 +86,8 @@ def summarize_document(documents):
 
     short_text = text[:12000]  # approx first 3000 tokens
 
-    prompt = f"""
-You are a legal assistant. Summarize the following legal document using markdown headings and bullet points.
-Be clear, concise, and highlight key clauses, parties involved, and obligations.
+    prompt = prompts["summarize"].format(content=short_text)
 
-Document:
-{short_text}
-
-Summary:
-"""
     try:
         print("🔍 Sending prompt to LLM...")
         summary = llm.complete(prompt).text.strip()
@@ -107,10 +105,11 @@ Summary:
 def highlight_clauses(documents):
     if not documents:
         return "⚠️ No document to analyze. Please upload a valid file."
+
     index = build_index(documents)
-    response = index.as_query_engine().query(
-        "List the important legal clauses and tag them under categories like Confidentiality, Termination, Liability, Dispute Resolution, etc. Explain each in plain language."
-    )
+    prompt = prompts["highlight"]  # 🔑 Load the prompt from prompts.json
+
+    response = index.as_query_engine().query(prompt)
     clauses = str(response)
     save_to_log("uploaded", "highlighted_clauses", clauses)
     return clauses
@@ -119,10 +118,11 @@ def highlight_clauses(documents):
 def clause_breakdown(documents):
     if not documents:
         return "⚠️ No document available for clause breakdown."
+
     index = build_index(documents)
-    response = index.as_query_engine().query(
-        "Break this legal document into individual clauses and explain each one clearly."
-    )
+    prompt = prompts["breakdown"]  # 🔑 Load prompt from JSON
+    response = index.as_query_engine().query(prompt)
+
     breakdown = str(response)
     save_to_log("uploaded", "clause_breakdown", breakdown)
     return breakdown
@@ -131,10 +131,11 @@ def clause_breakdown(documents):
 def simplify_legal_jargon(documents):
     if not documents:
         return "⚠️ No document to simplify."
+
     index = build_index(documents)
-    response = index.as_query_engine().query(
-        "Rewrite this legal document in extremely simple, everyday language that anyone can understand."
-    )
+    prompt = prompts["simplify"]  # 🔑 Load prompt from JSON
+    response = index.as_query_engine().query(prompt)
+
     simplified = str(response)
     save_to_log("uploaded", "simplified", simplified)
     return simplified
@@ -149,18 +150,25 @@ def answer_query(documents, query):
 
     history = "\n".join([f"User: {q}\nAI: {a}" for q, a in chat_history])
 
-    prompt = f"""
+    # 🔑 Use a structured prompt template from JSON
+    base_prompt = prompts.get("qa", """
 You are a helpful AI with expertise in legal and general questions.
 Always answer clearly, even if the question is not related to any document.
 
 Uploaded Document:
-{combined_text[:2000]}
+{document}
 
 Chat History:
 {history}
 
 User: {query}
-AI:"""
+AI:""").strip()
+
+    prompt = base_prompt.format(
+        document=combined_text[:2000],
+        history=history,
+        query=query
+    )
 
     response = llm.complete(prompt).text.strip()
     chat_history.append((query, response))
@@ -172,29 +180,12 @@ def extract_entities(documents):
     if not documents:
         return "⚠️ No document to extract entities from."
     index = build_index(documents)
-    response = index.as_query_engine().query(
-        "Extract all named entities from this legal document. Categorize them into: People, Organizations, Dates, Locations, Legal Terms."
-    )
+    prompt = prompts.get(
+        "entities", "Extract all named entities from this legal document. Categorize them into: People, Organizations, Dates, Locations, Legal Terms.")
+    response = index.as_query_engine().query(prompt)
     entities = str(response)
     save_to_log("uploaded", "entities", entities)
     return entities
-
-
-def export_highlighted_pdf(documents, original_file_path):
-    from fpdf import FPDF
-    if not documents:
-        return None
-    text = documents[0].text
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", size=12)
-    for line in text.split("\n"):
-        pdf.multi_cell(0, 10, line)
-    os.makedirs("outputs", exist_ok=True)
-    output_path = os.path.join("outputs", "highlighted_output.pdf")
-    pdf.output(output_path)
-    save_to_log("uploaded", "exported_pdf", "Generated highlighted PDF.")
-    return output_path
 
 
 def compare_documents(doc1, doc2):
@@ -202,13 +193,13 @@ def compare_documents(doc1, doc2):
         return "⚠️ Both documents must be uploaded for comparison."
 
     index = build_index(doc1 + doc2)
-    prompt = """
+    prompt = prompts.get("compare", """
 Compare the two legal documents provided. Highlight:
 - Key similarities and differences in clauses
 - Any mismatched obligations or terms
 - Differences in parties, durations, dispute resolution, liabilities, etc.
 Use clear headings and bullet points.
-"""
+""")
     response = index.as_query_engine().query(prompt)
     save_to_log("uploaded", "comparison", str(response))
     return str(response)

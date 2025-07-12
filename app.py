@@ -8,7 +8,7 @@ import requests
 from legal_backend import (
     load_document, summarize_document, highlight_clauses, answer_query,
     clause_breakdown, simplify_legal_jargon, extract_entities,
-    export_highlighted_pdf, compare_documents,
+    compare_documents,
 )
 from streamlit_extras.let_it_rain import rain
 from streamlit_lottie import st_lottie

@@ -1,0 +1,9 @@
+{
+  "summarize": "You are a legal assistant. Summarize the following legal document using markdown headings and bullet points. Be clear, concise, and highlight key clauses, parties involved, and obligations.\n\nDocument:\n{content}\n\nSummary:",
+  "highlight": "List the important legal clauses and tag them under categories like Confidentiality, Termination, Liability, Dispute Resolution, etc. Explain each in plain language.",
+  "breakdown": "Break this legal document into individual clauses and explain each one clearly.",
+  "simplify": "Rewrite this legal document in extremely simple, everyday language that anyone can understand.",
+  "entities": "Extract all named entities from this legal document. Categorize them into: People, Organizations, Dates, Locations, Legal Terms.",
+  "compare": "Compare the two legal documents provided. Highlight:\n- Key similarities and differences in clauses\n- Any mismatched obligations or terms\n- Differences in parties, durations, dispute resolution, liabilities, etc.\nUse clear headings and bullet points."
+}
+
