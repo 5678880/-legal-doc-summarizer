@@ -1,6 +1,7 @@
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
-from legalbackend import load_document, summarize_document, highlight_clauses, answer_query
+from legal_backend import load_document, summarize_document, highlight_clauses, answer_query
+
 import shutil
 import os
 
@@ -17,6 +18,7 @@ app.add_middleware(
 
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+
 
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
@@ -39,6 +41,7 @@ async def upload_file(file: UploadFile = File(...)):
         "clauses": clauses,
     }
 
+
 @app.post("/ask")
 async def ask(question: str = Form(...)):
     files = os.listdir(UPLOAD_DIR)
@@ -49,4 +52,3 @@ async def ask(question: str = Form(...)):
     docs = load_document(last_file)
     answer = answer_query(docs, question)
     return {"answer": answer}
-

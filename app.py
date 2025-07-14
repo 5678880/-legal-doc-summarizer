@@ -293,20 +293,9 @@ if not st.session_state.authenticated:
 with st.sidebar:
     st.image("https://img.icons8.com/ios-filled/100/scale.png", width=80)
     st.title("Legal AI Assistant ⚖️")
-
-    # 🔽 Add Disclaimer Here
-    st.markdown("""
-    ### ⚠️ Disclaimer
-
-    This tool is intended for **educational and informational purposes only**.
-
-    It **does not constitute formal legal advice**.  
-    Please consult a certified legal professional for official guidance.
-    """)
-
     uploaded_file = st.file_uploader(
         "📁 Upload Document (PDF/TXT/DOCX)", type=["pdf", "txt", "docx"])
-    st.markdown("🔐 100% Local: No data leaves your computer")
+    st.markdown("🔐 100% Local: No data leaves your computer. All results are based on AI, and hence should not be followed as proper legal advice.")
 
 # --- TITLE ---
 st.markdown("<div class='title'>📄 Legal Document Assistant</div>",
