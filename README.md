@@ -99,6 +99,17 @@ http://localhost:8501
       request_timeout=120
   )
   ```
+  ## 🔧 Running Backend without Docker (Local)
+
+You can run the FastAPI backend directly using `uvicorn`.
+
+### Step-by-step:
+
+1. Install dependencies:
+
+```bash
+pip install -r requirements.txt
+
 
 #### ❌ SSL or model download errors for HuggingFace
 - This might be due to network issues inside Docker.
