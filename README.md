@@ -110,6 +110,15 @@ You can run the FastAPI backend directly using `uvicorn`.
 ```bash
 pip install -r requirements.txt
 
+## 🐳 Running Backend with Docker
+
+### Step-by-step:
+
+1. Build the Docker image:
+
+```bash
+docker build -t legal-backend .
+
 
 #### ❌ SSL or model download errors for HuggingFace
 - This might be due to network issues inside Docker.
